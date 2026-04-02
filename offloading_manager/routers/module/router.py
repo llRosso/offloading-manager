@@ -3,7 +3,6 @@ from .module import Module
 from offloading_manager.core.state import State, get_state
 from offloading_manager.type import ModuleType
 
-
 modules_router = APIRouter()
 
 @modules_router.websocket("/ws/position")

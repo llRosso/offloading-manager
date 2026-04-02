@@ -11,7 +11,6 @@ async def lifespan(app: FastAPI):
     await controll_module.module_controll()
     yield
 
-
 app = FastAPI(lifespan=lifespan)
 
 app.include_router(modules_router)

@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 from offloading_manager.type import OffloadingType
 
-
 class StatusResponse(BaseModel):
     robots: dict[int, OffloadingType]
     

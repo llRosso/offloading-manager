@@ -10,8 +10,6 @@ from .models import (
 
 state_router = APIRouter()
 
-
-
 @state_router.get("/")
 async def get_all_offloading_status(state: State = Depends(get_state)) -> StatusResponse:
     return StatusResponse(robots=state.get_all_robots_state())

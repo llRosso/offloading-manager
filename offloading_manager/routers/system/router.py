@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, Depends
 from .models import SystemStatusResponse
 from offloading_manager.core.state import get_state, State
 
@@ -11,6 +11,6 @@ async def get_system_stress(state: State = Depends(get_state)) -> SystemStatusRe
         cpu_usage={module_type: stats.cpu_usage for module_type, stats in module_stats.items()},
         memory_usage={module_type: stats.memory_usage for module_type, stats in module_stats.items()},
         offloading_capable_robot=state.get_drone_offloading_capable(),
-        robot_in_offloading=state.get_robot_in_module_offloading()##TODO: implement robot in offloading per modulo
+        robot_in_offloading=state.get_robot_in_module_offloading()
     )
     

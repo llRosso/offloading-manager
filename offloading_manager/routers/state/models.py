@@ -1,11 +1,8 @@
 from pydantic import BaseModel
-from offloading_manager.type import OffloadingType, OffloadingType
-
-
+from offloading_manager.type import OffloadingType
 
 class StatusResponse(BaseModel):
-    robots: dict[int, OffloadingType]
-    
+    robots: dict[int, OffloadingType]  
 
 class RobotStatusResponse(BaseModel):
     id: int

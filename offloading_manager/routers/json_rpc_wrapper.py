@@ -34,7 +34,6 @@ JsonRPCMessage = Request | Notification | SuccessResponse | ErrorResponse
 
 def parse_json_rpc_message(raw: str) -> JsonRPCMessage:
     data = json.loads(raw)
-
     if "method" in data and "id" in data:
         return Request.model_validate(data)
     elif "method" in data:

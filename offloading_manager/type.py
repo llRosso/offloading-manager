@@ -12,7 +12,6 @@ class ModuleType(Enum):
     ARUCO = "aruco"
     NEIGHBOR = "neighbor"
 
-
 class Stats(BaseModel):
     cpu_usage: float
     memory_usage: float

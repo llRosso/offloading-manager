@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from offloading_manager.core.state import ModuleType
+from offloading_manager.type import ModuleType
 
 class SystemStatusResponse(BaseModel):
     cpu_usage: dict[ModuleType, float]
