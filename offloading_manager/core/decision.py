@@ -31,6 +31,9 @@ async def offloading_self_request_consideration(robot_id: int, request_type: Off
             else:
                 await module_connection.change_status_request(ChangeState(id=robot_id, calc=False))
     state.change_offloading_state(robot_id, request_type)
+    robot_connection = state.get_robot_connection(robot_id)
+    if robot_connection:
+        await robot_connection.respond(True, message_id)
 
 async def stats_valutation(state: State):
     all_stats = state.get_modules_stats()

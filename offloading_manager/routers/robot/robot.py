@@ -58,9 +58,9 @@ class Robot:
                 self._pending_requests.pop(self._send_request_id - 1, None)
                 return False
             
-    async def acknowledged(self, data: str):
+    async def respond(self, data: bool, message_id: int):
         if self._connected:
-            await self._ws.send_json(SuccessResponse(jsonrpc=2.0, result=data, id=self._arrived_request).model_dump())
+            await self._ws.send_json(SuccessResponse(jsonrpc=2.0, result=data, id=message_id).model_dump())
     
     async def _arrived_request_valutation(self,mesage: Request):
         try:
