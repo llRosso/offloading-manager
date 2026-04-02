@@ -1,5 +1,4 @@
 from fastapi import APIRouter, HTTPException, Depends
-import asyncio
 from offloading_manager.core.decision import offloading_request_consideration
 from offloading_manager.core.state import get_state, State
 from .models import (

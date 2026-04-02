@@ -18,11 +18,11 @@ async def offloading_request_consideration(robot_id: int, request_type: Offloadi
 
 
 async def stats_valutation(state: State):
-    all_stats = state.get_module_stats()
+    all_stats = state.get_modules_stats()
     for module, stats in all_stats.items():
         if stats.cpu_usage > 80 or stats.memory_usage > 80:
             i = 0
-            while not await remove_robot_from_offloading(state.get_offloading_robots(module)[i], module, state):
+            while not await remove_robot_from_offloading(state.get_offloading_robots_in_module(module)[i], module, state):
                 i += 1
             #per il momento in caso di stress parte a provare a togliere il primo robot fin quando non ci riesce
             pass

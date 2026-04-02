@@ -6,7 +6,7 @@ system_router = APIRouter()
 
 @system_router.get("/stress/system")
 async def get_system_stress(state: State = Depends(get_state)) -> SystemStatusResponse:
-    module_stats = state.get_module_stats()
+    module_stats = state.get_modules_stats()
     return SystemStatusResponse(
         cpu_usage={module_type: stats.cpu_usage for module_type, stats in module_stats.items()},
         memory_usage={module_type: stats.memory_usage for module_type, stats in module_stats.items()},
