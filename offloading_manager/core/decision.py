@@ -2,6 +2,7 @@ from offloading_manager.type import OffloadingType
 from offloading_manager.routers.state.models import RequestResponse
 from .state import State
 from offloading_manager.routers.robot.models import OffloadingRequest
+from offloading_manager.routers.module.models import ChangeState
 from offloading_manager.type import ModuleType
 
 
@@ -12,6 +13,13 @@ async def offloading_request_consideration(robot_id: int, request_type: Offloadi
         result = await robot_connection.change_status_request(OffloadingRequest(id=robot_id, type=request_type))
         if result is not None:
             if result:
+                for module in ModuleType:
+                    module_connection = state.get_module_connection(module)
+                    if module_connection is not None:
+                        if getattr(request_type, module.value):
+                            await module_connection.change_status_request(ChangeState(id=robot_id, calc=True))
+                        else:
+                            await module_connection.change_status_request(ChangeState(id=robot_id, calc=False))
                 state.change_offloading_state(robot_id, request_type)
             return RequestResponse(success=result)
     return RequestResponse(success=False)

@@ -3,6 +3,7 @@ from pydantic import ValidationError
 from offloading_manager.routers.json_rpc_wrapper import (
     parse_json_rpc_message, Request, Notification, SuccessResponse, ErrorResponse
 )
+from .models import ChangeState
 
 class Module():
     def __init__(self, websocket: WebSocket):
@@ -26,7 +27,7 @@ class Module():
             pass 
 
     
-    async def change_status_request(self, data: str):
+    async def change_status_request(self, data: ChangeState):
         if self.connected:
             await self.ws.send_json(Notification(jsonrpc=2.0, method="change_status", params=data).model_dump())
 

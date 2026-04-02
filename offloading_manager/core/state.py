@@ -1,12 +1,7 @@
-from pydantic import BaseModel
 from offloading_manager.routers.robot.robot import Robot
 from offloading_manager.routers.module.module import Module
-from offloading_manager.type import OffloadingType, OffloadingType, ModuleType, Stats
-from enum import Enum
-
-
+from offloading_manager.type import OffloadingType, ModuleType, Stats
 from typing import Dict, Optional
-
 
 class State:
     def __init__(self):
@@ -17,7 +12,6 @@ class State:
 
     # ------------------- ROBOT STATE ------------------- #
 
-    
     def change_offloading_state(self, robot_id: int, offloading: OffloadingType) -> None:
         """Change the saved offloading state of a robot
         Args:
