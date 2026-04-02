@@ -14,7 +14,6 @@ class Robot:
         self._state = state
         self._connected = False
         self._send_request_id = 0
-        self._arrived_request = 0
         self._pending_requests: dict[int, asyncio.Future] = {}
 
     async def connect(self):
@@ -66,7 +65,6 @@ class Robot:
         try:
             offloading_request = OffloadingRequest.model_validate(mesage.params)
             await offloading_self_request_consideration(self._robot_id, offloading_request.type, self._state, mesage.id)
-            self._arrived_request = mesage.id
         except ValidationError:
             await self._ws.send_json(ErrorResponse(jsonrpc=2.0, error={"code": -32700, "message": "Parse error"}, id=mesage.id).model_dump())
 

@@ -4,11 +4,13 @@ from offloading_manager.routers.module.router import modules_router
 from offloading_manager.routers.robot.router import robots_router
 from offloading_manager.routers.state.router import state_router
 from offloading_manager.routers.system.router import system_router
-from offloading_manager.controll_module import controll_module
+from offloading_manager.controll_module.controll_module import DockerMonitor
+from offloading_manager.core.state import get_state
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await controll_module.module_controll()
+    docker_monitor = DockerMonitor(get_state())
+    await docker_monitor.start() 
     yield
 
 app = FastAPI(lifespan=lifespan)
