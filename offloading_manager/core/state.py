@@ -1,91 +1,98 @@
 from pydantic import BaseModel
 from offloading_manager.routers.robot.robot import Robot
 from offloading_manager.routers.module.module import Module
-from offloading_manager.core.decision import offloading_consideration
+from offloading_manager.type import OffloadingType, OffloadingType, ModuleType, Stats
 from enum import Enum
 
-class OffloadingType(BaseModel):
-    aggregate : bool = False
-    aruco : bool = False
-    neighbor : bool = False
 
-class OffloadingState(BaseModel):
-    aggregate : bool = False
-    aruco : bool = False
-    neighbor : bool = False
-    available : bool = True
-
-robots_state: dict[int, OffloadingState] = {}
-
-robot_requests: dict[int, OffloadingType] = {}
-
-robots_connection: dict [int , Robot] = {}
-
-class Module_Type(Enum):
-    AGGREGATE = "aggregate"
-    ARUCO = "aruco"
-    NEIGHBOR = "neighbor"
-
-module_connections: dict[Module_Type, Module] = {}
-
-class Stasts(BaseModel):
-    cpu_usage: float
-    memory_usage: float
-    drone_in_offloading: int
-
-module_stats: dict[Module_Type, Stasts] = {}
-drone_offloading_capable: int = 0
+from typing import Dict, Optional
 
 
-#-------------------ROBOT STATE------------------#
+class State:
+    def __init__(self):
+        self._robots_state: Dict[int, OffloadingType] = {}
+        self._robot_requests: Dict[int, OffloadingType] = {}
+        self._robots_connection: Dict[int, Robot] = {}
+        self._module_connections: Dict[ModuleType, Module] = {}
+        self._module_stats: Dict[ModuleType, Stats] = {}
 
-def robot_unavailable(id: int):
-    robots_state[id].available = False
+    # ------------------- ROBOT STATE ------------------- #
 
-def change_offloading_state(id: int, offloading: OffloadingState):
-    state = robots_state[id]
-    update_data = offloading.model_dump(exclude_unset=True) 
-    for field, value in update_data.items():
-        setattr(state, field, value)
+    def change_offloading_state(self, robot_id: int, offloading: OffloadingType) -> None:
+        self._robots_state[robot_id] = offloading
 
-def get_robot_state(id: int) -> OffloadingState | None:
-    return robots_state.get(id)
+    def get_robot_state(self, robot_id: int) -> Optional[OffloadingType]:
+        return self._robots_state.get(robot_id)
 
-def get_all_robots_state() -> dict[int, OffloadingState]:
-    return robots_state
+    def get_all_robots_state(self) -> Dict[int, OffloadingType]:
+        return self._robots_state
 
-async def offloading_request(id: int, offloading: OffloadingType) :
-    robot_requests[id] = offloading
-    return await offloading_consideration(id, offloading)
+    def get_not_offloading_robots(self) -> list[int]:
+        return [
+            robot_id
+            for robot_id, state in self._robots_state.items()
+            if not (state.aggregate or state.aruco or state.neighbor)
+        ]
 
-async def offloading_robot_self_request(id: int, offloading: OffloadingType) :
-    robot_requests[id] = offloading
-    await offloading_consideration(id, offloading)
-    #to consider request from the robot
+    def get_offloading_robots(self, module_type: ModuleType) -> list[int]:
+        attr = module_type.value  
+        return [
+            robot_id
+            for robot_id, state in self._robots_state.items()
+            if getattr(state, attr)
+        ]
+    
+    def get_module_for_robot(self, robot_id: int) -> list[ModuleType]:
+        modules = []
+        if robot_id in self._robots_state:
+            state = self._robots_state[robot_id]
+            if state.aggregate:
+                modules.append(ModuleType.AGGREGATE)
+            if state.aruco:
+                modules.append(ModuleType.ARUCO)
+            if state.neighbor:
+                modules.append(ModuleType.NEIGHBOR)
+        return modules
 
-#-------------------ROBOT CONNECTIONS------------------#
+    # ------------------- REQUESTS ------------------- #
+    def get_robot_requests(self) -> Dict[int, OffloadingType]:
+        return self._robot_requests
 
-def add_robot_connection(id: int, robot: Robot):
-    robots_connection[id] = robot
+    # ------------------- ROBOT CONNECTIONS ------------------- #
 
-def remove_robot_connection(id: int):
-    robots_connection.pop(id, None)
+    def add_robot_connection(self, robot_id: int, robot: Robot) -> None:
+        self._robots_connection[robot_id] = robot
 
-def get_robot_connection(id: int) -> Robot | None:
-    return robots_connection.get(id)
+    def remove_robot_connection(self, robot_id: int) -> None:
+        self._robots_connection.pop(robot_id, None)
 
-#-------------------MODULE CONNECTIONS------------------#
+    def get_robot_connection(self, robot_id: int) -> Optional[Robot]:
+        return self._robots_connection.get(robot_id)
 
-def add_module_connection(module_type: Module_Type, module: Module):
-    module_connections[module_type] = module
+    # ------------------- MODULE CONNECTIONS ------------------- #
 
-#-------------------STATS------------------#
+    def add_module_connection(self, module_type: ModuleType, module: Module) -> None:
+        self._module_connections[module_type] = module
 
-def update_module_stats(module_type: Module_Type, stats: Stasts):
-    module_stats[module_type] = stats
+    def get_module_connection(self, module_type: ModuleType) -> Optional[Module]:
+        return self._module_connections.get(module_type)
 
-def get_module_stats() -> dict[Module_Type, Stasts] :
-    return module_stats
+    # ------------------- STATS ------------------- #
 
-def get_drone_offloading_capable() -> int:
-    return drone_offloading_capable
+    def update_module_stats(self, module_type: ModuleType, stats: Stats) -> None:
+        self._module_stats[module_type] = stats
+
+    def get_module_stats(self) -> Dict[ModuleType, Stats]:
+        return self._module_stats
+
+    def get_drone_offloading_capable(self) -> int:
+        return len(self._robots_connection)
+
+    def get_robot_in_module_offloading(self) -> dict[ModuleType, int]:
+        return {module: len(self.get_offloading_robots(module)) for module in ModuleType}
+        
+
+state = State()
+
+def get_state() -> State:
+    return state

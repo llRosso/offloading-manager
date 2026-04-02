@@ -8,7 +8,7 @@ from offloading_manager.controll_module import controll_module
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    controll_module.stat_module_controll()
+    await controll_module.module_controll()
     yield
 
 

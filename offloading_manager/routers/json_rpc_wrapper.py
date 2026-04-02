@@ -19,7 +19,7 @@ class Request(BaseModel):
     method: str
     params: Any
     id: int
-            
+           
 class Notification(BaseModel):
     jsonrpc: float
     method: str
