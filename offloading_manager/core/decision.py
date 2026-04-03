@@ -43,15 +43,15 @@ async def stats_valutation(state: State):
     all_stats = state.get_modules_stats()
     for module, stats in all_stats.items():
         if stats.cpu_usage > 80 or stats.memory_usage > 80:
-            i = 0
-            while not await remove_robot_from_offloading(state.get_offloading_robots_in_module(module)[i], module, state):
-                i += 1
+            for robot_id in state.get_robots_ids():
+                if await remove_robot_from_offloading(state.get_offloading_robots_in_module(module)[robot_id], module, state):
+                    break
             #per il momento in caso di stress parte a provare a togliere il primo robot fin quando non ci riesce
             
 async def remove_robot_from_offloading(robot_id: int, module_type: ModuleType, state: State) -> bool | None:
     offloading_module = state.get_robot_state(robot_id)
     if offloading_module is not None: 
-        offloading_request = offloading_module.copy(update={module_type.value: False})     
+        offloading_request = offloading_module.model_copy(update={module_type.value: False})     
         result = await offloading_request_consideration(robot_id, offloading_request, state)
         return result.success
 
