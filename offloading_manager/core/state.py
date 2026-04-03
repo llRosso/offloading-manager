@@ -21,6 +21,14 @@ class State:
 
         self._robots_state[robot_id] = offloading
 
+    def remove_robot_state(self, robot_id: int) -> None:
+        """Remove the saved offloading state of a robot
+        Args:
+            robot_id (int): the id of the robot
+        """
+
+        self._robots_state.pop(robot_id, None)
+        
     def get_robot_state(self, robot_id: int) -> Optional[OffloadingType]:
         """Get the saved offloading state of a robot
         Args:

@@ -6,6 +6,7 @@ from offloading_manager.routers.json_rpc_wrapper import (
     parse_json_rpc_message, Request, SuccessResponse, ErrorResponse
 )
 from offloading_manager.core.decision import offloading_self_request_consideration
+from offloading_manager.type import OffloadingType
 
 class Robot:
     def __init__(self, websocket: WebSocket, robot_id: int, state):
@@ -19,9 +20,13 @@ class Robot:
     async def connect(self):
         await self._ws.accept()
         self._connected = True
+        self._state.add_robot_connection(self._robot_id, self)
+        self._state.change_offloading_state(self._robot_id, OffloadingType(aggregate=False, aruco=False, neighbor=False))
     
     async def disconnect(self):
         self._connected = False
+        self._state.remove_robot_connection(self._robot_id)
+        self._state.remove_robot_state(self._robot_id)
         for future in self._pending_requests.values():
             if not future.done():
                 future.cancel()
