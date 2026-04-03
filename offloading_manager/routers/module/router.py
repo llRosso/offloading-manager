@@ -29,15 +29,15 @@ async def aggregate_websoket(websocket: WebSocket, state: State = Depends(get_st
         finally:
             await aggregate_websoket.disconnect()
 
-@modules_router.websocket("/ws/neighboor")
-async def neighboor_websoket(websocket: WebSocket, state: State = Depends(get_state)):
-        neighboor_websoket = Module(websocket)
-        state.add_module_connection(ModuleType.NEIGHBOR, neighboor_websoket)
-        await neighboor_websoket.connect()
+@modules_router.websocket("/ws/neighbor")
+async def neighbor_websoket(websocket: WebSocket, state: State = Depends(get_state)):
+        neighbor_websoket = Module(websocket)
+        state.add_module_connection(ModuleType.NEIGHBOR, neighbor_websoket)
+        await neighbor_websoket.connect()
         try:
-            await neighboor_websoket.listen()          
+            await neighbor_websoket.listen()          
         except WebSocketDisconnect:
             pass
         finally:
-            await neighboor_websoket.disconnect()
+            await neighbor_websoket.disconnect()
 

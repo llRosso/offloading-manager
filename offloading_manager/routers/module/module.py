@@ -19,10 +19,12 @@ class Module():
     
     async def listen(self):
         try:
-            while WebSocketDisconnect:
+            while self._connected:
                 data = await self._ws.receive_text()
                 mesage = await self.parse_json(data)
 
+        except WebSocketDisconnect:
+            await self.disconnect()
         except Exception:
             pass 
 
