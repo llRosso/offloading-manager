@@ -92,6 +92,14 @@ class State:
             if state.neighbor:
                 modules.append(ModuleType.NEIGHBOR)
         return modules
+    
+    def get_robots_ids(self) -> list[int]:
+        """Get the list of all robot ids that are currently in the state
+        Returns:
+            list[int]: a list of all robot ids that are currently in the state
+        """
+
+        return list(self._robots_state.keys())
 
     # ------------------- ROBOT CONNECTIONS ------------------- #
 
