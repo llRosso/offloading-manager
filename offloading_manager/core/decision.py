@@ -1,9 +1,13 @@
+from __future__ import annotations
 from offloading_manager.type import OffloadingType
 from offloading_manager.routers.state.models import RequestResponse
-from .state import State
 from offloading_manager.routers.robot.models import OffloadingRequest
 from offloading_manager.routers.module.models import ChangeState
 from offloading_manager.type import ModuleType
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .state import State
 
 async def offloading_request_consideration(robot_id: int, request_type: OffloadingType, state: State) -> RequestResponse:
     robot_connection = state.get_robot_connection(robot_id)
