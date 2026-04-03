@@ -8,8 +8,7 @@ robots_router = APIRouter()
 async def robot_websocket(websocket: WebSocket, robot_id: int, state: State = Depends(get_state)):
     robot = Robot(websocket, robot_id, state)
     await robot.connect()
-    state.add_robot_connection(robot_id, robot)
-
+    
     try:
         await robot.listen()          
     except WebSocketDisconnect:

@@ -52,9 +52,10 @@ class Robot:
         if self._connected:
             loop = asyncio.get_event_loop()
             future: asyncio.Future = loop.create_future()
-            self._pending_requests[self._send_request_id] = future
-            await self._ws.send_json(Request(jsonrpc=2.0, method="change_status", params=data, id=self._send_request_id).model_dump())
+            current_id = self._send_request_id
             self._send_request_id += 1
+            self._pending_requests[current_id] = future
+            await self._ws.send_json(Request(jsonrpc=2.0, method="change_status", params=data, id=current_id).model_dump())
             try:
                 result = await asyncio.wait_for(future, timeout=10)  # timeout 10 secondi per il momento non so quanto ci mettano i robot, ricordasi di chiedere
                 return result.success
