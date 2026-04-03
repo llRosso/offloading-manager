@@ -5,7 +5,7 @@ from offloading_manager.routers.module.router import modules_router
 from offloading_manager.routers.robot.router import robots_router
 from offloading_manager.routers.state.router import state_router
 from offloading_manager.routers.system.router import system_router
-from offloading_manager.controll_module.controll_module import DockerMonitor
+from offloading_manager.control_module.control_module import DockerMonitor
 from offloading_manager.core.state import get_state
 
 @asynccontextmanager
@@ -16,6 +16,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+#just for testing, to be removed later
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
