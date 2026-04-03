@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
+from fastapi.middleware.cors import CORSMiddleware
 from offloading_manager.routers.module.router import modules_router
 from offloading_manager.routers.robot.router import robots_router
 from offloading_manager.routers.state.router import state_router
@@ -10,10 +11,17 @@ from offloading_manager.core.state import get_state
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     docker_monitor = DockerMonitor(get_state())
-    await docker_monitor.start() 
+    ##await docker_monitor.start() 
     yield
 
 app = FastAPI(lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(modules_router)
 app.include_router(robots_router)
