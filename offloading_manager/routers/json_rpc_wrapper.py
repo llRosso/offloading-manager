@@ -33,6 +33,14 @@ class ErrorResponse(BaseModel):
 JsonRPCMessage = Request | Notification | SuccessResponse | ErrorResponse
 
 def parse_json_rpc_message(raw: str) -> JsonRPCMessage:
+    """Parse a JSON-RPC 2.0 message from a raw string
+    Args:
+        raw (str): the raw JSON string to parse
+    Returns:
+        JsonRPCMessage: the parsed JSON-RPC message, which can be a Request, Notification, SuccessResponse, or ErrorResponse
+    Raises:
+        ValueError: if the raw string cannot be parsed as a valid JSON-RPC message
+    """
     data = json.loads(raw)
     if "method" in data and "id" in data:
         return Request.model_validate(data)
