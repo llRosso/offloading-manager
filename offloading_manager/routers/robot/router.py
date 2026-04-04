@@ -14,5 +14,4 @@ async def robot_websocket(websocket: WebSocket, robot_id: int, state: State = De
     except WebSocketDisconnect:
         pass
     finally:
-        state.remove_robot_connection(robot_id)
         await robot.disconnect()

@@ -76,7 +76,7 @@ class Robot:
                 result = await asyncio.wait_for(future, timeout=10)  # timeout 10 secondi per il momento non so quanto ci mettano i robot, ricordasi di chiedere
                 return result.success
             except asyncio.TimeoutError:
-                self._pending_requests.pop(self._send_request_id - 1, None)
+                self._pending_requests.pop(current_id, None)
                 return False
             
     async def respond(self, data: bool, message_id: int):
@@ -129,7 +129,7 @@ class Robot:
             Returns:
                 Request | SuccessResponse | ErrorResponse: the parsed and validated JSON-RPC message
             """ 
-            
+
             try :
                 return parse_json_rpc_message(data)
             except (ValueError, ValidationError) as e:
