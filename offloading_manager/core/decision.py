@@ -65,8 +65,8 @@ async def stats_valutation(state: State):
     all_stats = state.get_modules_stats()
     for module, stats in all_stats.items():
         if stats.cpu_usage > 80 or stats.memory_usage > 80:
-            for robot_id in state.get_robots_ids():
-                if await remove_robot_from_offloading(state.get_offloading_robots_in_module(module)[robot_id], module, state):
+            for robot_id in state.get_offloading_robots_in_module(module):
+                if await remove_robot_from_offloading(robot_id, module, state):
                     break
             #per il momento in caso di stress parte a provare a togliere il primo robot fin quando non ci riesce
             
@@ -79,7 +79,7 @@ async def remove_robot_from_offloading(robot_id: int, module_type: ModuleType, s
     Returns:
         bool | None: the result of the operation, or None if the robot was not offloading in the specified module or if the operation failed
     """
-    
+
     offloading_module = state.get_robot_state(robot_id)
     if offloading_module is not None: 
         offloading_request = offloading_module.model_copy(update={module_type.value: False})     
