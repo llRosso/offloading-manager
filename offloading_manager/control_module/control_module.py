@@ -19,6 +19,9 @@ class DockerMonitor:
         self._client: aiodocker.Docker 
 
     async def start(self):
+        """Starts the Docker monitor, which periodically checks the stats of the relevant containers and updates the system state accordingly.
+        """
+
         self._running = True
         async with aiodocker.Docker() as client:
             self._client = client
@@ -27,9 +30,17 @@ class DockerMonitor:
                 await asyncio.sleep(self.interval)
 
     def stop(self):
+        """Stops the Docker monitor.
+        """
+
         self._running = False
 
     async def _get_containers(self):
+        """Retrieves the list of Docker containers that are connected to the specified network and are relevant for monitoring.
+        Returns:
+            list[Container]: a list of containers that are connected to the specified network and are relevant for monitoring
+        """
+
         containers = await self._client.containers.list()
         result = []
         for c in containers:
@@ -39,6 +50,9 @@ class DockerMonitor:
         return result
 
     async def _tick(self):
+        """Operation performed at each tick of the monitoring cycle.
+        """
+
         containers = await self._get_containers()
         for container, info in containers: 
             name = info["Name"].lstrip("/")
@@ -48,6 +62,13 @@ class DockerMonitor:
         await stats_valutation(self.state)
 
     async def _get_stats(self, container) -> Stats:
+        """Retrieves the current stats of a given container and converts them into a Stats object.
+        Args:
+            container: the Docker container for which to retrieve the stats
+        Returns:
+            Stats: the current stats of the container, including CPU and memory usage
+        """
+
         raw = await container.stats(stream=False)
         return Stats(
             cpu_usage=self._cpu_percent(raw),
@@ -56,6 +77,13 @@ class DockerMonitor:
 
     @staticmethod
     def _cpu_percent(stats: dict) -> float:
+        """Calculates the CPU usage percentage from the raw stats of a container.
+        Args:
+            stats (dict): the raw stats of the container, as returned by the Docker API
+        Returns:
+            float: the calculated CPU usage percentage
+        """
+
         cpu_delta = (
             stats["cpu_stats"]["cpu_usage"]["total_usage"]
             - stats["precpu_stats"]["cpu_usage"]["total_usage"]
@@ -71,6 +99,12 @@ class DockerMonitor:
 
     @staticmethod
     def _mem_percent(stats: dict) -> float:
+        """Calculates the memory usage percentage from the raw stats of a container.
+        Args:
+            stats (dict): the raw stats of the container, as returned by the Docker API 
+        Returns:            
+            float: the calculated memory usage percentage
+        """
         usage = stats["memory_stats"]["usage"]
         cache = stats["memory_stats"].get("stats", {}).get("cache", 0)
         limit = stats["memory_stats"]["limit"]

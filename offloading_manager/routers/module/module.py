@@ -11,13 +11,23 @@ class Module():
         self._connected = False
 
     async def connect(self):
+        """Accepts the WebSocket connection and marks the module as connected.
+        """
+
         await self._ws.accept()
         self._connected = True
     
     async def disconnect(self):
+        """Closes the WebSocket connection and marks the module as disconnected.
+        """
+
+        await self._ws.close()
         self._connected = False
     
     async def listen(self):
+        """Listens for incoming messages from the module, processes them, and handles disconnections and errors.
+        """
+
         try:
             while self._connected:
                 data = await self._ws.receive_text()
@@ -29,10 +39,22 @@ class Module():
             pass 
 
     async def change_status_request(self, data: ChangeState):
+        """Sends a change status request to the module with the given data.
+        Args:
+            data (ChangeState): the data for the change status request
+        """
+
         if self._connected:
             await self._ws.send_json(Notification(jsonrpc=2.0, method="change_status", params=data).model_dump())
 
     async def parse_json(self, data: str):
+        """Parses an incoming JSON message from the module and validates it as a JSON-RPC message.
+        Args:
+            data (str): the incoming JSON message from the module   
+        Returns:
+            Notification: the parsed and validated JSON-RPC notification message
+        """
+        
         try :
             return parse_json_rpc_message(data)
         except (ValueError, ValidationError) as e:

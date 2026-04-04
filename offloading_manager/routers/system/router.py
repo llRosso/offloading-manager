@@ -4,7 +4,12 @@ from offloading_manager.core.state import get_state, State
 
 system_router = APIRouter()
 
-@system_router.get("/stress/system")
+@system_router.get(
+        "/stress/system",
+        response_model=SystemStatusResponse,
+        summary="Get system stress information",
+        description="Returns the current CPU and memory usage for each module, the number of offloading-capable robots, and the number of robots currently in offloading."
+        )
 async def get_system_stress(state: State = Depends(get_state)) -> SystemStatusResponse:
     module_stats = state.get_modules_stats()
     return SystemStatusResponse(
