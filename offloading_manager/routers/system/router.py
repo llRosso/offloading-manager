@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from .models import SystemStatusResponse
+from offloading_manager.routers.models import SystemStatusResponse
 from offloading_manager.core.state import get_state, State
 
 system_router = APIRouter()

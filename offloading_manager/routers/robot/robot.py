@@ -1,7 +1,7 @@
 import asyncio
 from fastapi import WebSocket, WebSocketDisconnect
 from pydantic import ValidationError
-from .models import OffloadingRequest, RequestResponse
+from offloading_manager.routers.models import OffloadingRequest, RequestResponse
 from offloading_manager.routers.json_rpc_wrapper import (
     parse_json_rpc_message, Request, SuccessResponse, ErrorResponse
 )

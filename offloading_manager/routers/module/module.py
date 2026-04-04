@@ -3,7 +3,7 @@ from pydantic import ValidationError
 from offloading_manager.routers.json_rpc_wrapper import (
     parse_json_rpc_message, Notification
 )
-from .models import ChangeState
+from offloading_manager.routers.models import ChangeState
 
 class Module():
     def __init__(self, websocket: WebSocket):

@@ -1,8 +1,6 @@
 from __future__ import annotations
 from offloading_manager.type import OffloadingType
-from offloading_manager.routers.state.models import RequestResponse
-from offloading_manager.routers.robot.models import OffloadingRequest
-from offloading_manager.routers.module.models import ChangeState
+from offloading_manager.routers.models import RequestResponse, ChangeState, OffloadingRequest 
 from offloading_manager.type import ModuleType
 from typing import TYPE_CHECKING
 
