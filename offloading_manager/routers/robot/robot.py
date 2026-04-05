@@ -7,6 +7,10 @@ from offloading_manager.routers.json_rpc_wrapper import (
 )
 from offloading_manager.core.decision import offloading_self_request_consideration
 from offloading_manager.type import OffloadingType
+import logging
+
+logger = logging.getLogger("uvicorn.error")
+
 
 class Robot:
     def __init__(self, websocket: WebSocket, robot_id: int, state):
@@ -25,6 +29,7 @@ class Robot:
         self._connected = True
         self._state.add_robot_connection(self._robot_id, self)
         self._state.change_offloading_state(self._robot_id, OffloadingType(aggregate=False, aruco=False, neighbor=False))
+        logger.info(f"Robot {self._robot_id} connected")
     
     async def disconnect(self):
         """Closes the WebSocket connection, removes the robot from the state, and cancels any pending requests.
@@ -37,6 +42,7 @@ class Robot:
             if not future.done():
                 future.cancel()
         self._pending_requests.clear()
+        logger.info(f"Robot {self._robot_id} disconnected")
 
     async def listen(self):
         """Listens for incoming messages from the robot, processes them, and handles disconnections and errors.
@@ -53,9 +59,10 @@ class Robot:
                 elif isinstance(mesage, ErrorResponse):
                     await self._arrived_error_valutation(mesage)
         except WebSocketDisconnect:
+            logger.info(f"Robot {self._robot_id} disconnected")
             await self.disconnect()
         except Exception as e:
-            print(f"Robot {self._robot_id} error: {e}")
+            logger.error(f"Robot {self._robot_id} unexpected error: {e}", exc_info=True)
 
     async def change_status_request(self, data: OffloadingRequest) -> bool | None:
         """Sends a request to change the offloading status to the robot and waits for a response.
@@ -72,13 +79,15 @@ class Robot:
             self._send_request_id += 1
             self._pending_requests[current_id] = future
             await self._ws.send_json(Request(jsonrpc=2.0, method="change_status", params=data, id=current_id).model_dump())
+            logger.info(f"Robot {self._robot_id} sending change_status request id={current_id}")
             try:
                 result = await asyncio.wait_for(future, timeout=10)  # timeout 10 secondi per il momento non so quanto ci mettano i robot, ricordasi di chiedere
                 return result.success
             except asyncio.TimeoutError:
+                logger.warning(f"Robot {self._robot_id} request id={current_id} timed out")
                 self._pending_requests.pop(current_id, None)
                 return False
-            
+                    
     async def respond(self, data: bool, message_id: int):
         """Sends a response to the robot.
         Args:

@@ -3,6 +3,9 @@ from offloading_manager.type import OffloadingType
 from offloading_manager.routers.models import RequestResponse, ChangeState, OffloadingRequest 
 from offloading_manager.type import ModuleType
 from typing import TYPE_CHECKING
+import logging
+
+logger = logging.getLogger("uvicorn.error")
 
 if TYPE_CHECKING:
     from .state import State
@@ -16,11 +19,13 @@ async def offloading_request_consideration(robot_id: int, request_type: Offloadi
     Returns:
         RequestResponse: the result of the offloading request consideration, indicating success or failure
     """
-    
+
+    logger.info(f"Offloading request for robot {robot_id}: {request_type}")
     robot_connection = state.get_robot_connection(robot_id)
     if robot_connection is not None:
         result = await robot_connection.change_status_request(OffloadingRequest(id=robot_id, type=request_type))
         if result is not None:
+            logger.info(f"Offloading request for robot {robot_id} {'accepted' if result else 'rejected'}")
             if result:
                 for module in ModuleType:
                     module_connection = state.get_module_connection(module)
@@ -63,6 +68,7 @@ async def stats_valutation(state: State):
     all_stats = state.get_modules_stats()
     for module, stats in all_stats.items():
         if stats.cpu_usage > 80 or stats.memory_usage > 80:
+            logger.info(f"Module {module} under stress (cpu={stats.cpu_usage:.1f}% mem={stats.memory_usage:.1f}%), attempting to remove a robot")
             for robot_id in state.get_offloading_robots_in_module(module):
                 if await remove_robot_from_offloading(robot_id, module, state):
                     break
@@ -82,5 +88,6 @@ async def remove_robot_from_offloading(robot_id: int, module_type: ModuleType, s
     if offloading_module is not None: 
         offloading_request = offloading_module.model_copy(update={module_type.value: False})     
         result = await offloading_request_consideration(robot_id, offloading_request, state)
+        logger.info(f"Removing robot {robot_id} from module {module_type.value}")
         return result.success
 

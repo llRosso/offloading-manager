@@ -4,6 +4,9 @@ from offloading_manager.routers.json_rpc_wrapper import (
     parse_json_rpc_message, Notification
 )
 from offloading_manager.routers.models import ChangeState
+import logging
+
+logger = logging.getLogger("uvicorn.error")
 
 class Module():
     def __init__(self, websocket: WebSocket):
@@ -16,6 +19,7 @@ class Module():
 
         await self._ws.accept()
         self._connected = True
+        logger.info("Module connected")
     
     async def disconnect(self):
         """Closes the WebSocket connection and marks the module as disconnected.
@@ -23,6 +27,7 @@ class Module():
 
         await self._ws.close()
         self._connected = False
+        logger.info("Module disconnected")
     
     async def listen(self):
         """Listens for incoming messages from the module, processes them, and handles disconnections and errors.
@@ -59,4 +64,5 @@ class Module():
             return parse_json_rpc_message(data)
         except (ValueError, ValidationError) as e:
             await self._ws.send_json({"error": str(e)}) 
+            logger.warning(f"Module received invalid JSON-RPC message: {e}")
         

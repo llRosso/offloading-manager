@@ -3,6 +3,9 @@ import aiodocker
 from offloading_manager.type import ModuleType, Stats
 from offloading_manager.core.decision import stats_valutation
 from offloading_manager.core.state import State
+import logging
+logger = logging.getLogger("uvicorn.error")
+
 
 DOCKER_NAME: dict[str, ModuleType] = {
     "project-emerge-aruco-detector": ModuleType.ARUCO,
@@ -28,12 +31,14 @@ class DockerMonitor:
             while self._running:
                 await self._tick()
                 await asyncio.sleep(self.interval)
+        logger.info("DockerMonitor started")
 
     def stop(self):
         """Stops the Docker monitor.
         """
 
         self._running = False
+        logger.info("DockerMonitor stopped")
 
     async def _get_containers(self):
         """Retrieves the list of Docker containers that are connected to the specified network and are relevant for monitoring.
@@ -60,6 +65,7 @@ class DockerMonitor:
                 stats = await self._get_stats(container)
                 self.state.update_module_stats(DOCKER_NAME[name], stats)
         await stats_valutation(self.state)
+        logger.debug(f"DockerMonitor: found {len(containers)} containers")
 
     async def _get_stats(self, container) -> Stats:
         """Retrieves the current stats of a given container and converts them into a Stats object.
