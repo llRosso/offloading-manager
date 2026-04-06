@@ -13,7 +13,7 @@ DOCKER_NAME: dict[str, ModuleType] = {
     "project-emerge-neighborhood-system": ModuleType.NEIGHBOR,
 }
 
-class DockerMonitor:
+class ModuleMonitor:
     def __init__(self, state: State, network: str = "project-emerge-network", interval: float = 5.0):
         self.state = state
         self.network = network
@@ -31,14 +31,14 @@ class DockerMonitor:
             while self._running:
                 await self._tick()
                 await asyncio.sleep(self.interval)
-        logger.info("DockerMonitor started")
+        logger.info("ModuleMonitor started")
 
     def stop(self):
-        """Stops the Docker monitor.
+        """Stops the Module monitor.
         """
 
         self._running = False
-        logger.info("DockerMonitor stopped")
+        logger.info("ModuleMonitor stopped")
 
     async def _get_containers(self):
         """Retrieves the list of Docker containers that are connected to the specified network and are relevant for monitoring.
