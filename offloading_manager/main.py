@@ -5,7 +5,7 @@ from offloading_manager.routers.module.router import modules_router
 from offloading_manager.routers.robot.router import robots_router
 from offloading_manager.routers.state.router import state_router
 from offloading_manager.routers.system.router import system_router
-from offloading_manager.control_module.module_monitor import ModuleMonitor
+from offloading_manager.module_monitor.module_monitor import ModuleMonitor
 from offloading_manager.core.state import get_state
 import asyncio
 
