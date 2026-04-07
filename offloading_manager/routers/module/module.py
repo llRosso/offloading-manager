@@ -25,8 +25,11 @@ class Module():
         """Closes the WebSocket connection and marks the module as disconnected.
         """
 
-        await self._ws.close()
         self._connected = False
+        try:
+            await self._ws.close()
+        except RuntimeError:
+            pass 
         logger.info("Module disconnected")
     
     async def listen(self):
