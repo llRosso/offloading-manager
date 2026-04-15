@@ -1,5 +1,6 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
+from offloading_manager.settings import settings
 from offloading_manager.core.module_registry import ModuleRegistry
 from offloading_manager.core.robot_registry import RobotRegistry
 from offloading_manager.type import OffloadingType, RobotID
@@ -168,7 +169,7 @@ class OnlyDeleteDecisionModule(StandardDecisionModule):
 
         all_stats = self.module_registry.get_modules_stats()
         for module, stats in all_stats.items():
-            if stats.cpu_usage > 80 or stats.memory_usage > 80:
+            if stats.cpu_usage > settings.only_delete_decision_max_cpu or stats.memory_usage > settings.only_delete_decision_max_memory:
                 logger.info(
                     f"Module {module} under stress (cpu={stats.cpu_usage:.1f}% mem={stats.memory_usage:.1f}%), attempting to remove a robot"
                 )

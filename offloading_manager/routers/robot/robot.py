@@ -1,6 +1,7 @@
 import asyncio
 import logging
 from typing import Protocol
+from offloading_manager.settings import settings
 from fastapi import WebSocket, WebSocketDisconnect
 from pydantic import ValidationError
 from offloading_manager.routers.models import OffloadingRequest, RequestResponse
@@ -92,8 +93,8 @@ class Robot:
             )
             try:
                 result = await asyncio.wait_for(
-                    future, timeout=10
-                )  # timeout 10 secondi per il momento non so quanto ci mettano i robot, ricordasi di chiedere
+                    future, timeout=settings.robot_response_timeout
+                )  
                 return result.success
             except asyncio.TimeoutError:
                 logger.warning(

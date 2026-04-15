@@ -3,6 +3,7 @@ from typing import Protocol
 import aiodocker
 from offloading_manager.type import ModuleType, Stats
 import logging
+from offloading_manager.settings import settings
 
 logger = logging.getLogger("uvicorn.error")
 
@@ -23,8 +24,8 @@ class ModuleMonitor:
     def __init__(
         self,
         model: ModuleMonitorModel,
-        network: str = "project-emerge-network",
-        interval: float = 5.0,
+        network: str = settings.containers_network,
+        interval: float = settings.containers_polling_interval,
     ):
         self.model = model
         self.network = network
