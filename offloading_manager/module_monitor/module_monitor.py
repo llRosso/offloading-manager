@@ -1,9 +1,9 @@
 import asyncio
+from typing import Protocol
 import aiodocker
 from offloading_manager.type import ModuleType, Stats
-from offloading_manager.core.decision import stats_valutation
-from offloading_manager.core.state import State
 import logging
+
 logger = logging.getLogger("uvicorn.error")
 
 
@@ -13,17 +13,27 @@ DOCKER_NAME: dict[str, ModuleType] = {
     "project-emerge-neighborhood-system": ModuleType.NEIGHBOR,
 }
 
+
+class ModuleMonitorModel(Protocol):
+    def update_module_stats(self, module_type: ModuleType, stats: Stats) -> None: ...
+    async def stats_valutation(self) -> None: ...
+
+
 class ModuleMonitor:
-    def __init__(self, state: State, network: str = "project-emerge-network", interval: float = 5.0):
-        self.state = state
+    def __init__(
+        self,
+        model: ModuleMonitorModel,
+        network: str = "project-emerge-network",
+        interval: float = 5.0,
+    ):
+        self.model = model
         self.network = network
         self.interval = interval
         self._running = False
-        self._client: aiodocker.Docker 
+        self._client: aiodocker.Docker
 
     async def start(self):
-        """Starts the Docker monitor, which periodically checks the stats of the relevant containers and updates the system state accordingly.
-        """
+        """Starts the Docker monitor, which periodically checks the stats of the relevant containers and updates the system state accordingly."""
 
         self._running = True
         async with aiodocker.Docker() as client:
@@ -34,8 +44,7 @@ class ModuleMonitor:
         logger.info("ModuleMonitor started")
 
     def stop(self):
-        """Stops the Module monitor.
-        """
+        """Stops the Module monitor."""
 
         self._running = False
         logger.info("ModuleMonitor stopped")
@@ -49,22 +58,21 @@ class ModuleMonitor:
         containers = await self._client.containers.list()
         result = []
         for c in containers:
-            info = await c.show()  
+            info = await c.show()
             if self.network in info["NetworkSettings"]["Networks"]:
-                result.append((c, info)) 
+                result.append((c, info))
         return result
 
     async def _tick(self):
-        """Operation performed at each tick of the monitoring cycle.
-        """
+        """Operation performed at each tick of the monitoring cycle."""
 
         containers = await self._get_containers()
-        for container, info in containers: 
+        for container, info in containers:
             name = info["Name"].lstrip("/")
             if name in DOCKER_NAME:
                 stats = await self._get_stats(container)
-                self.state.update_module_stats(DOCKER_NAME[name], stats)
-        await stats_valutation(self.state)
+                self.model.update_module_stats(DOCKER_NAME[name], stats)
+        await self.model.stats_valutation()
         logger.debug(f"DockerMonitor: found {len(containers)} containers")
 
     async def _get_stats(self, container) -> Stats:
@@ -107,8 +115,8 @@ class ModuleMonitor:
     def _mem_percent(stats: dict) -> float:
         """Calculates the memory usage percentage from the raw stats of a container.
         Args:
-            stats (dict): the raw stats of the container, as returned by the Docker API 
-        Returns:            
+            stats (dict): the raw stats of the container, as returned by the Docker API
+        Returns:
             float: the calculated memory usage percentage
         """
         usage = stats["memory_stats"]["usage"]

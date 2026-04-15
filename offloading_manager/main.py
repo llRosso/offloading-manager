@@ -1,25 +1,28 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
-from offloading_manager.routers.module.router import modules_router
-from offloading_manager.routers.robot.router import robots_router
-from offloading_manager.routers.state.router import state_router
-from offloading_manager.routers.system.router import system_router
+from offloading_manager.core.decision_module import OnlyDeleteDecisionModule
+from offloading_manager.core.model import Model
+from offloading_manager.routers.module.router import ModuleRouter
+from offloading_manager.routers.robot.router import RobotRouter
+from offloading_manager.routers.state.router import StateRouter
+from offloading_manager.routers.system.router import SystemRouter
 from offloading_manager.module_monitor.module_monitor import ModuleMonitor
-from offloading_manager.core.state import get_state
 import asyncio
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    docker_monitor = ModuleMonitor(get_state())
+    docker_monitor = ModuleMonitor(model)
     task = asyncio.create_task(docker_monitor.start())
     yield
     docker_monitor.stop()
     task.cancel()
 
+
 app = FastAPI(lifespan=lifespan)
 
-#just for testing, to be removed later
+# just for testing, to be removed later
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -27,7 +30,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(modules_router)
-app.include_router(robots_router)
-app.include_router(state_router)
-app.include_router(system_router)
+model = Model(OnlyDeleteDecisionModule)
+
+
+app.include_router(ModuleRouter(model).router)
+app.include_router(RobotRouter(model).router)
+app.include_router(StateRouter(model).router)
+app.include_router(SystemRouter(model).router)
