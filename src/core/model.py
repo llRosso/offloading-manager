@@ -1,10 +1,10 @@
-from offloading_manager.core.decision_module import DecisionModule
-from offloading_manager.core.module_registry import ModuleRegistry
-from offloading_manager.core.robot_registry import RobotRegistry
-from offloading_manager.routers.models import RequestResponse
-from offloading_manager.routers.module.module import Module
-from offloading_manager.routers.robot.robot import Robot
-from offloading_manager.type import ModuleType, OffloadingType, Stats, RobotID
+from src.core.decision_module import DecisionModule
+from src.core.module_registry import ModuleRegistry
+from src.core.robot_registry import RobotRegistry
+from src.routers.models import RequestResponse
+from src.routers.module.module import Module
+from src.routers.robot.robot import Robot
+from src.type import ModuleType, OffloadingType, Stats, RobotID
 
 
 class Model:

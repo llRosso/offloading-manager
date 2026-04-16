@@ -9,3 +9,7 @@ dependencies = [
     "asyncio>=4.0.0",
     "fastapi[standard]>=0.135.2",
 ]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

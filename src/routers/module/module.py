@@ -1,10 +1,10 @@
 from fastapi import WebSocket, WebSocketDisconnect
 from pydantic import ValidationError
-from offloading_manager.routers.json_rpc_wrapper import (
+from src.routers.json_rpc_wrapper import (
     parse_json_rpc_message,
     Notification,
 )
-from offloading_manager.routers.models import ChangeState
+from src.routers.models import ChangeState
 import logging
 
 logger = logging.getLogger("uvicorn.error")

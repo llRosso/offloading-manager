@@ -1,5 +1,5 @@
-from offloading_manager.routers.robot.robot import Robot
-from offloading_manager.type import OffloadingType, ModuleType, RobotID
+from src.routers.robot.robot import Robot
+from src.type import OffloadingType, ModuleType, RobotID
 
 
 class RobotRegistry:

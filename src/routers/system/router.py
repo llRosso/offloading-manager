@@ -1,7 +1,7 @@
 from typing import Protocol
 from fastapi import APIRouter
-from offloading_manager.routers.models import SystemStatusResponse
-from offloading_manager.type import ModuleType, Stats
+from src.routers.models import SystemStatusResponse
+from src.type import ModuleType, Stats
 
 
 class SystemModel(Protocol):

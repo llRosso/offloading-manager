@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from offloading_manager.type import OffloadingType, RobotID
+from src.type import OffloadingType, RobotID
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from .robot import Robot
 
