@@ -4,7 +4,7 @@ from src.type import OffloadingType, ModuleType, RobotID
 
 class RobotRegistry:
     def __init__(self):
-        self._robots_state: dict[Robot, OffloadingType] = {}
+        self._robots_state: dict[RobotID, tuple[Robot, OffloadingType]] = {}
 
     # ------------------- ROBOT STATE ------------------- #
 
@@ -16,10 +16,9 @@ class RobotRegistry:
             robot_id (RobotID): the id of the robot
             offloading (OffloadingType): the new offloading state of the robot
         """
-        for robot in self._robots_state.keys():
-            if robot.robot_id == robot_id:
-                self._robots_state[robot] = offloading
-                break
+        if robot_id in self._robots_state:
+            robot, _ = self._robots_state[robot_id]
+            self._robots_state[robot_id] = (robot, offloading)
 
     def get_robot_state(self, robot_id: RobotID) -> OffloadingType | None:
         """Get the saved offloading state of a robot
@@ -28,20 +27,15 @@ class RobotRegistry:
         Returns:
             OffloadingType | None: the saved offloading state of the robot, or None if not found
         """
-        for robot in self._robots_state.keys():
-            if robot.robot_id == robot_id:
-                return self._robots_state[robot]
-        return None
+        entry = self._robots_state.get(robot_id)
+        return entry[1] if entry else None
 
     def get_all_robots_state(self) -> dict[RobotID, OffloadingType]:
         """Get the saved offloading state of all robots
         Returns:
             dict[RobotID, OffloadingType]: a dictionary mapping robot ids to their saved offloading state
         """
-        result = {}
-        for robot in self._robots_state.keys():
-            result[robot.robot_id] = self._robots_state[robot]
-        return result
+        return {robot_id: state for robot_id, (_, state) in self._robots_state.items()}
 
     def get_not_offloading_robots(self) -> list[RobotID]:
         """Get the list of robots that are not offloading in any module at the moment
@@ -50,8 +44,8 @@ class RobotRegistry:
         """
 
         return [
-            robot.robot_id
-            for robot, state in self._robots_state.items()
+            robot_id
+            for robot_id, (_, state) in self._robots_state.items()
             if not (state.aggregate or state.aruco or state.neighbor)
         ]
 
@@ -65,8 +59,8 @@ class RobotRegistry:
 
         attr = module_type.value
         return [
-            robot.robot_id
-            for robot, state in self._robots_state.items()
+            robot_id
+            for robot_id, (_, state) in self._robots_state.items()
             if getattr(state, attr)
         ]
 
@@ -78,15 +72,17 @@ class RobotRegistry:
             list[ModuleType]: a list of module types in which the robot is offloading
         """
 
+        entry = self._robots_state.get(robot_id)
+        if not entry:
+            return []
+        _, state = entry
         modules = []
-        for robot, state in self._robots_state.items():
-            if robot.robot_id == robot_id:
-                if state.aggregate:
-                    modules.append(ModuleType.AGGREGATE)
-                if state.aruco:
-                    modules.append(ModuleType.ARUCO)
-                if state.neighbor:
-                    modules.append(ModuleType.NEIGHBOR)
+        if state.aggregate:
+            modules.append(ModuleType.AGGREGATE)
+        if state.aruco:
+            modules.append(ModuleType.ARUCO)
+        if state.neighbor:
+            modules.append(ModuleType.NEIGHBOR)
         return modules
 
     def get_robots_ids(self) -> list[RobotID]:
@@ -95,15 +91,16 @@ class RobotRegistry:
             list[RobotID]: a list of all robot ids that are currently in the state
         """
 
-        return [robot.robot_id for robot in self._robots_state.keys()]
+        return list(self._robots_state.keys())
 
-    def add_robot_connection(self, robot: Robot) -> None:
+    def add_robot_connection(self, robot: Robot, robot_id: RobotID) -> None:
         """Add a robot connection to the state
         Args:
             robot (Robot): the robot connection to add
+            robot_id (RobotID): the id of the robot
         """
 
-        self._robots_state[robot] = OffloadingType()
+        self._robots_state[robot_id] = (robot, OffloadingType())
 
     def remove_robot_connection(self, robot_id: RobotID) -> None:
         """Remove a robot connection from the state
@@ -111,10 +108,7 @@ class RobotRegistry:
             robot_id (RobotID): the id of the robot
         """
 
-        for robot in self._robots_state.keys():
-            if robot.robot_id == robot_id:
-                self._robots_state.pop(robot)
-                break
+        self._robots_state.pop(robot_id, None)
 
     def get_robot_connection(self, robot_id: RobotID) -> Robot | None:
         """Get a robot connection from the state
@@ -124,10 +118,8 @@ class RobotRegistry:
             Optional[Robot]: the robot connection, or None if not found
         """
 
-        for robot in self._robots_state.keys():
-            if robot.robot_id == robot_id:
-                return robot
-        return None
+        entry = self._robots_state.get(robot_id)
+        return entry[0] if entry else None
 
     def get_drone_offloading_capable(self) -> int:
         """Get the number of robots that offloading capable

@@ -6,7 +6,7 @@ from .robot import Robot
 
 
 class RobotRouterModel(Protocol):
-    def add_robot(self, robot: Robot) -> None: ...
+    def add_robot(self, robot: Robot, robot_id: RobotID) -> None: ...
 
     def remove_robot(self, robot_id: RobotID) -> None: ...
 
@@ -23,7 +23,7 @@ class RobotRouter:
         async def robot_websocket(websocket: WebSocket, robot_id: RobotID):
             robot = Robot(websocket, robot_id, robot_model)
             await robot.connect()
-            robot_model.add_robot(robot)
+            robot_model.add_robot(robot, robot_id)
             try:
                 await robot.listen()
             except WebSocketDisconnect:

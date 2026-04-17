@@ -11,6 +11,9 @@ from src.module_monitor.module_monitor import ModuleMonitor
 import asyncio
 
 
+model = Model(OnlyDeleteDecisionModule)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     docker_monitor = ModuleMonitor(model)
@@ -29,8 +32,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-model = Model(OnlyDeleteDecisionModule)
 
 
 app.include_router(ModuleRouter(model).router)

@@ -15,13 +15,13 @@ class Model:
             self._robotRegistry, self._moduleRegistry
         )
 
-    def add_robot(self, robot: Robot) -> None:
+    def add_robot(self, robot: Robot, robot_id: RobotID) -> None:
         """Add a robot to the system with an initial offloading state of not offloading in any module
         Args:
             robot_id (int): the id of the robot to add
         """
 
-        self._robotRegistry.add_robot_connection(robot)
+        self._robotRegistry.add_robot_connection(robot, robot_id)
 
     def remove_robot(self, robot_id: RobotID) -> None:
         """Remove a robot from the system
