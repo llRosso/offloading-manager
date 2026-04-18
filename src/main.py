@@ -11,7 +11,11 @@ from src.module_monitor.module_monitor import ModuleMonitor
 import asyncio
 
 
-model = Model(OnlyDeleteDecisionModule)
+def create_model():
+    return Model(OnlyDeleteDecisionModule)
+
+
+model = create_model()
 
 
 @asynccontextmanager
