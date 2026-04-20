@@ -4,7 +4,7 @@ from src.settings import settings
 from src.core.module_registry import ModuleRegistry
 from src.core.robot_registry import RobotRegistry
 from src.type import OffloadingType, RobotID
-from src.routers.models import (
+from src.routers.schemas import (
     RequestResponse,
     ChangeState,
     OffloadingRequest,

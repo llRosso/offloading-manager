@@ -1,7 +1,7 @@
 from src.core.decision_module import DecisionModule
 from src.core.module_registry import ModuleRegistry
 from src.core.robot_registry import RobotRegistry
-from src.routers.models import RequestResponse
+from src.routers.schemas import RequestResponse
 from src.routers.module.module import Module
 from src.routers.robot.robot import Robot
 from src.type import ModuleType, OffloadingType, Stats, RobotID

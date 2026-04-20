@@ -1,6 +1,6 @@
 from typing import Protocol
 from fastapi import APIRouter
-from src.routers.models import SystemStatusResponse
+from src.routers.schemas import SystemStatusResponse
 from src.type import ModuleType, Stats
 
 

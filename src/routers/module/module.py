@@ -4,7 +4,7 @@ from src.routers.json_rpc_wrapper import (
     parse_json_rpc_message,
     Notification,
 )
-from src.routers.models import ChangeState
+from src.routers.schemas import ChangeState
 import logging
 
 logger = logging.getLogger("uvicorn.error")

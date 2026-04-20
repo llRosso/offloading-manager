@@ -4,7 +4,7 @@ from typing import Protocol
 from src.settings import settings
 from fastapi import WebSocket, WebSocketDisconnect
 from pydantic import ValidationError
-from src.routers.models import OffloadingRequest, RequestResponse
+from src.routers.schemas import OffloadingRequest, RequestResponse
 from src.routers.json_rpc_wrapper import (
     parse_json_rpc_message,
     Request,
