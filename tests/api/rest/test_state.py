@@ -1,8 +1,6 @@
-import pytest
-from starlette.testclient import TestClient
-from unittest.mock import MagicMock, AsyncMock, patch
-from src.main import app, model
-from src.type import OffloadingType, ModuleType
+from unittest.mock import MagicMock, AsyncMock
+from src.main import model
+from src.type import OffloadingType
 from src.routers.robot.robot import Robot
 
 

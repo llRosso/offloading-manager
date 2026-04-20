@@ -1,10 +1,8 @@
 import pytest
-from starlette.testclient import TestClient
 from unittest.mock import MagicMock
-from src.main import app, model
+from src.main import model
 from src.type import ModuleType, Stats, OffloadingType
 from src.routers.robot.robot import Robot
-from src.routers.module.module import Module
 
 
 class TestGetSystemStress:
