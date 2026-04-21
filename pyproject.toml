@@ -1,7 +1,10 @@
 [project]
 name = "offloading-manager"
+authors = [
+    { name = "Lorenzo Rossi", email = "lorenzo.rossi50@studio.unibo.it" }
+]
 version = "0.1.0"
-description = "Add your description here"
+license = "MIT"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
@@ -23,7 +26,7 @@ dev = [
 ]
  
 [tool.fastapi]
-entrypoint = "domain_gateway.main:app"
+entrypoint = "offloading_manager.main:app"
 
 [build-system]
 requires = ["uv_build>=0.11.2,<0.12"]

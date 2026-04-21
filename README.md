@@ -113,11 +113,8 @@ All settings are read from environment variables (or a `.env` file):
 ## Running with Docker
 
 ```bash
-# Create the shared network (once, project-wide)
-docker network create project-emerge-network
-
-# Build and start
-docker compose up --build
+docker build -t offloading-manager . 
+docker run -p 8000:8000 offloading-manager
 ```
 
 The service is exposed on port `8000`.
@@ -131,53 +128,17 @@ The service is exposed on port `8000`.
 - Python 3.13+
 - [`uv`](https://github.com/astral-sh/uv)
 
-### Setup
-
-```bash
-uv pip install --system ".[dev]"
-```
-
 ### Running locally
 
 ```bash
-uvicorn offloading_manager.main:app --reload
+uv run fastapi dev 
 ```
 
 ### Running tests
 
 ```bash
-pytest
+uv run pytest
 ```
 
 Tests cover unit tests for registries and the decision module, REST API integration tests, and WebSocket protocol tests.
 
----
-
-## Project Structure
-
-```
-offloading_manager/
-├── main.py                   # FastAPI app and lifespan
-├── settings.py               # Pydantic settings
-├── type.py                   # Shared types (OffloadingType, Stats, ...)
-├── core/
-│   ├── model.py              # Central model / facade
-│   ├── decision_module.py    # Offloading decision logic
-│   ├── robot_registry.py     # Robot state management
-│   └── module_registry.py    # Module state management
-├── module_monitor/
-│   └── module_monitor.py     # Docker stats polling background task
-└── routers/
-    ├── robot/                # Robot WebSocket router
-    ├── module/               # Module WebSocket router
-    ├── state/                # REST state router
-    ├── system/               # REST system stress router
-    ├── schemas.py            # Pydantic request/response models
-    └── json_rpc_wrapper.py   # JSON-RPC 2.0 parsing
-```
-
----
-
-## License
-
-MIT — see [LICENSE](LICENSE).
