@@ -57,9 +57,9 @@ class Model:
         return self._moduleRegistry.get_modules_stats()
 
     def get_robot_offloading_capable(self) -> int:
-        """Get the number of robots that offloading capable
+        """Get the number of robots that are offloading capable
         Returns:
-            int: the number of robots that are currently offloading in at least one module
+            int: the number of robots that are offloading capable
         """
 
         return self._robotRegistry.get_drone_offloading_capable()

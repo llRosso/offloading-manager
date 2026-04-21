@@ -131,7 +131,7 @@ class StandardDecisionModule(DecisionModule, ABC):
             module_type (ModuleType): the module from which to remove the robot from offloading
             state (State): the current state of the system
         Returns:
-            bool | None: the result of the operation, or None if the robot was not offloading in the specified module or if the operation failed
+            bool | None: the result of the operation, or None if the robot or module was not found 
         """
 
         offloading_module = self.robot_registry.get_robot_state(robot_id)
@@ -148,6 +148,14 @@ class StandardDecisionModule(DecisionModule, ABC):
     async def _add_robot_to_offloading(
         self, robot_id: RobotID, module_type: ModuleType
     ) -> bool | None:
+        """Adds a robot to offloading in a specific module, updates the offloading state, and notifies the relevant modules.
+        Args:
+            robot_id (RobotID): the id of the robot to add to offloading
+            module_type (ModuleType): the module to which to add the robot to offloading
+            state (State): the current state of the system
+        Returns:
+            bool | None: the result of the operation, or None if the robot or the module was not found
+        """
         offloading_module = self.robot_registry.get_robot_state(robot_id)
         if offloading_module is not None:
             offloading_request = offloading_module.model_copy(
@@ -169,7 +177,10 @@ class OnlyDeleteDecisionModule(StandardDecisionModule):
 
         all_stats = self.module_registry.get_modules_stats()
         for module, stats in all_stats.items():
-            if stats.cpu_usage > settings.only_delete_decision_max_cpu or stats.memory_usage > settings.only_delete_decision_max_memory:
+            if (
+                stats.cpu_usage > settings.only_delete_decision_max_cpu
+                or stats.memory_usage > settings.only_delete_decision_max_memory
+            ):
                 logger.info(
                     f"Module {module} under stress (cpu={stats.cpu_usage:.1f}% mem={stats.memory_usage:.1f}%), attempting to remove a robot"
                 )
