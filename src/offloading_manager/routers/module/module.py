@@ -38,7 +38,7 @@ class Module:
         try:
             while self._connected:
                 data = await self._ws.receive_text()
-                mesage = await self.parse_json(data)
+                _ = await self.parse_json(data)
 
         except WebSocketDisconnect:
             await self.disconnect()
