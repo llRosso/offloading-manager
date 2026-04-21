@@ -52,4 +52,4 @@ WORKDIR /app
 EXPOSE 8000
 
 # Run the FastAPI application by default
-CMD ["fastapi", "run", "--host", "0.0.0.0", "/main.py"]     
+CMD ["fastapi", "run", "--host", "0.0.0.0"]     
