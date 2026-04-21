@@ -1,8 +1,8 @@
 import pytest
 from unittest.mock import MagicMock
-from src.core.module_registry import ModuleRegistry
-from src.routers.module.module import Module
-from src.type import ModuleType, Stats
+from offloading_manager.core.module_registry import ModuleRegistry
+from offloading_manager.routers.module.module import Module
+from offloading_manager.type import ModuleType, Stats
 
 
 @pytest.fixture

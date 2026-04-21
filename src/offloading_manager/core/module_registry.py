@@ -1,5 +1,5 @@
-from src.type import ModuleType, Stats
-from src.routers.module.module import Module
+from offloading_manager.type import ModuleType, Stats
+from offloading_manager.routers.module.module import Module
 
 
 class ModuleRegistry:

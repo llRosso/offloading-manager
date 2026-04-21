@@ -1,8 +1,8 @@
 import pytest
 from unittest.mock import MagicMock
-from src.core.robot_registry import RobotRegistry
-from src.routers.robot.robot import Robot
-from src.type import OffloadingType, ModuleType
+from offloading_manager.core.robot_registry import RobotRegistry
+from offloading_manager.routers.robot.robot import Robot
+from offloading_manager.type import OffloadingType, ModuleType
 
 
 @pytest.fixture

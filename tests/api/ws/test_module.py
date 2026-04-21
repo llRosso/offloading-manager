@@ -1,13 +1,11 @@
 import json
-import pytest
-from starlette.testclient import TestClient
-from src.main import app, model
-from src.type import ModuleType
+from offloading_manager.main import model
+from offloading_manager.type import ModuleType
 
 
 class TestModuleWebSocket:
     def test_aruco_module_registered_on_connect(self, test_client):
-        with test_client.websocket_connect("/ws/position") as ws:
+        with test_client.websocket_connect("/ws/position"):
             assert (
                 model._moduleRegistry.get_module_connection(ModuleType.ARUCO)
                 is not None
@@ -19,7 +17,7 @@ class TestModuleWebSocket:
         assert model._moduleRegistry.get_module_connection(ModuleType.ARUCO) is None
 
     def test_aggregate_module_registered_on_connect(self, test_client):
-        with test_client.websocket_connect("/ws/aggregate") as ws:
+        with test_client.websocket_connect("/ws/aggregate"):
             assert (
                 model._moduleRegistry.get_module_connection(ModuleType.AGGREGATE)
                 is not None
@@ -31,7 +29,7 @@ class TestModuleWebSocket:
         assert model._moduleRegistry.get_module_connection(ModuleType.AGGREGATE) is None
 
     def test_neighbor_module_registered_on_connect(self, test_client):
-        with test_client.websocket_connect("/ws/neighbor") as ws:
+        with test_client.websocket_connect("/ws/neighbor"):
             assert (
                 model._moduleRegistry.get_module_connection(ModuleType.NEIGHBOR)
                 is not None

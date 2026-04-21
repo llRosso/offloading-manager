@@ -1,6 +1,6 @@
 from pydantic import BaseModel
-from src.type import ModuleType
-from src.type import OffloadingType
+from offloading_manager.type import ModuleType
+from offloading_manager.type import OffloadingType
 
 
 class SystemStatusResponse(BaseModel):

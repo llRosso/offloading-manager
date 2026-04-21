@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock, AsyncMock
-from src.main import model
-from src.type import OffloadingType
-from src.routers.robot.robot import Robot
+from offloading_manager.main import model
+from offloading_manager.type import OffloadingType
+from offloading_manager.routers.robot.robot import Robot
 
 
 def _add_robot(robot_id: int, state: OffloadingType | None = None):

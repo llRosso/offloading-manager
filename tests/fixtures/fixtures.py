@@ -1,11 +1,10 @@
 import pytest
 from starlette.testclient import TestClient
-from unittest.mock import MagicMock, AsyncMock, patch
-from src.core.decision_module import OnlyDeleteDecisionModule
-from src.core.model import Model
-from src.main import app, model
-from src.type import OffloadingType, ModuleType, Stats
-from src.routers.robot.robot import Robot
+from unittest.mock import MagicMock
+from offloading_manager.core.decision_module import OnlyDeleteDecisionModule
+from offloading_manager.core.model import Model
+from offloading_manager.main import app, model
+from offloading_manager.type import ModuleType, Stats
 
 
 @pytest.fixture
@@ -22,8 +21,8 @@ def model_fixture():
 @pytest.fixture
 def populated_model(model):
     """Model with two robots and one module already registered."""
-    from src.routers.robot.robot import Robot
-    from src.routers.module.module import Module
+    from offloading_manager.routers.robot.robot import Robot
+    from offloading_manager.routers.module.module import Module
 
     robot1 = MagicMock(spec=Robot)
     robot1.robot_id = 1

@@ -1,11 +1,11 @@
 import pytest
 from unittest.mock import MagicMock, AsyncMock
-from src.core.decision_module import OnlyDeleteDecisionModule
-from src.core.robot_registry import RobotRegistry
-from src.core.module_registry import ModuleRegistry
-from src.routers.robot.robot import Robot
-from src.routers.module.module import Module
-from src.type import ModuleType, OffloadingType, Stats
+from offloading_manager.core.decision_module import OnlyDeleteDecisionModule
+from offloading_manager.core.robot_registry import RobotRegistry
+from offloading_manager.core.module_registry import ModuleRegistry
+from offloading_manager.routers.robot.robot import Robot
+from offloading_manager.routers.module.module import Module
+from offloading_manager.type import ModuleType, OffloadingType, Stats
 
 
 @pytest.fixture

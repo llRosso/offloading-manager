@@ -1,13 +1,13 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
-from src.core.decision_module import OnlyDeleteDecisionModule
-from src.core.model import Model
-from src.routers.module.router import ModuleRouter
-from src.routers.robot.router import RobotRouter
-from src.routers.state.router import StateRouter
-from src.routers.system.router import SystemRouter
-from src.module_monitor.module_monitor import ModuleMonitor
+from offloading_manager.core.decision_module import OnlyDeleteDecisionModule
+from offloading_manager.core.model import Model
+from offloading_manager.routers.module.router import ModuleRouter
+from offloading_manager.routers.robot.router import RobotRouter
+from offloading_manager.routers.state.router import StateRouter
+from offloading_manager.routers.system.router import SystemRouter
+from offloading_manager.module_monitor.module_monitor import ModuleMonitor
 import asyncio
 
 

@@ -1,17 +1,17 @@
 import asyncio
 import logging
 from typing import Protocol
-from src.settings import settings
+from offloading_manager.settings import settings
 from fastapi import WebSocket, WebSocketDisconnect
 from pydantic import ValidationError
-from src.routers.schemas import OffloadingRequest, RequestResponse
-from src.routers.json_rpc_wrapper import (
+from offloading_manager.routers.schemas import OffloadingRequest, RequestResponse
+from offloading_manager.routers.json_rpc_wrapper import (
     parse_json_rpc_message,
     Request,
     SuccessResponse,
     ErrorResponse,
 )
-from src.type import OffloadingType, RobotID
+from offloading_manager.type import OffloadingType, RobotID
 
 logger = logging.getLogger("uvicorn.error")
 

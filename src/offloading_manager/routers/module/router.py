@@ -2,7 +2,7 @@ from typing import Protocol
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from .module import Module
-from src.type import ModuleType
+from offloading_manager.type import ModuleType
 
 
 class ModuleModel(Protocol):

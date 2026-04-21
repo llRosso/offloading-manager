@@ -1,8 +1,5 @@
 import json
-import pytest
-from starlette.testclient import TestClient
-from src.main import app, model
-from src.type import OffloadingType
+from offloading_manager.main import model
 
 
 def _rpc_request(method: str, params: dict, id: int = 1) -> str:
@@ -15,7 +12,7 @@ def _rpc_response(result: dict, id: int = 1) -> str:
 
 class TestRobotWebSocket:
     def test_robot_is_registered_on_connect(self, test_client):
-        with test_client.websocket_connect("/ws/robots/10") as ws:
+        with test_client.websocket_connect("/ws/robots/10"):
             assert model._robotRegistry.get_robot_state(10) is not None
 
     def test_robot_is_removed_on_disconnect(self, test_client):

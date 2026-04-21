@@ -1,9 +1,9 @@
 import asyncio
 from typing import Protocol
 import aiodocker
-from src.type import ModuleType, Stats
+from offloading_manager.type import ModuleType, Stats
 import logging
-from src.settings import settings
+from offloading_manager.settings import settings
 
 logger = logging.getLogger("uvicorn.error")
 

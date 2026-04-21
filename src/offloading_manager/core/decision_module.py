@@ -1,15 +1,15 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from src.settings import settings
-from src.core.module_registry import ModuleRegistry
-from src.core.robot_registry import RobotRegistry
-from src.type import OffloadingType, RobotID
-from src.routers.schemas import (
+from offloading_manager.settings import settings
+from offloading_manager.core.module_registry import ModuleRegistry
+from offloading_manager.core.robot_registry import RobotRegistry
+from offloading_manager.type import OffloadingType, RobotID
+from offloading_manager.routers.schemas import (
     RequestResponse,
     ChangeState,
     OffloadingRequest,
 )
-from src.type import ModuleType
+from offloading_manager.type import ModuleType
 import logging
 
 logger = logging.getLogger("uvicorn.error")

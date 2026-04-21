@@ -1,7 +1,7 @@
 from typing import Protocol
-from src.type import OffloadingType, RobotID
+from offloading_manager.type import OffloadingType, RobotID
 from fastapi import APIRouter, HTTPException
-from src.routers.schemas import (
+from offloading_manager.routers.schemas import (
     RobotStatusResponse,
     StatusResponse,
     RequestResponse,

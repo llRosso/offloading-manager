@@ -1,8 +1,8 @@
 import pytest
 from unittest.mock import MagicMock
-from src.main import model
-from src.type import ModuleType, Stats, OffloadingType
-from src.routers.robot.robot import Robot
+from offloading_manager.main import model
+from offloading_manager.type import ModuleType, Stats, OffloadingType
+from offloading_manager.routers.robot.robot import Robot
 
 
 class TestGetSystemStress:
