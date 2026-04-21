@@ -85,6 +85,8 @@ class ModuleMonitor:
         """
 
         raw = await container.stats(stream=False)
+        if isinstance(raw, list):
+            raw = raw[0]
         return Stats(
             cpu_usage=self._cpu_percent(raw),
             memory_usage=self._mem_percent(raw),
