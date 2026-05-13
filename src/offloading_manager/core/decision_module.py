@@ -189,3 +189,41 @@ class OnlyDeleteDecisionModule(StandardDecisionModule):
                 ):
                     if await self._remove_robot_from_offloading(robot_id, module):
                         break
+
+class testOthersModuleConnectionDecisionModule(DecisionModule):
+    async def offloading_request_consideration(
+        self, robot_id: RobotID, request_type: OffloadingType
+    ) -> RequestResponse:
+        for module in ModuleType:
+            module_connection = self.module_registry.get_module_connection(
+                module
+            )
+            if module_connection is not None:
+                if getattr(request_type, module.value):
+                    await module_connection.change_status_request(
+                        ChangeState(id=robot_id, calc=True)
+                    )
+                else:
+                    await module_connection.change_status_request(
+                        ChangeState(id=robot_id, calc=False)
+                    )
+        self.robot_registry.change_offloading_state(robot_id, request_type)
+        return RequestResponse(success=True)
+
+    async def offloading_self_request_consideration(
+        self, robot_id: RobotID, request_type: OffloadingType, message_id: int
+    ) -> None:
+        pass
+
+    async def stats_valutation(self):
+        pass
+
+    async def _remove_robot_from_offloading(
+        self, robot_id: RobotID, module_type: ModuleType
+    ) -> bool | None:
+        return True
+
+    async def _add_robot_to_offloading(
+        self, robot_id: RobotID, module_type: ModuleType
+    ) -> bool | None:
+        return True
